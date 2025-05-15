@@ -14,9 +14,11 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     return '✅ CEL to G25 backend is live!'
-    @app.route('/ping')
+
+@app.route('/ping')
 def ping():
     return 'pong'
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 

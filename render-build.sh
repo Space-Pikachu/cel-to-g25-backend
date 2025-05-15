@@ -24,10 +24,10 @@ cd /tmp && \
   make install
 
 # Clone gtc2vcf
-cd /opt && \
+cd /tmp && \
   git clone https://github.com/freeseek/gtc2vcf.git
 
 # Add gtc2vcf as bcftools plugin
 mkdir -p ~/.bcftools/plugins && \
-  cp /opt/gtc2vcf/gtc2vcf.c ~/.bcftools/plugins/ && \
+  cp /tmp/gtc2vcf/gtc2vcf.c ~/.bcftools/plugins/ && \
   bcftools plugin -lv

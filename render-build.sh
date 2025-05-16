@@ -28,8 +28,10 @@ cp bcftools /tmp/bin/
 rm -rf /tmp/gtc2vcf
 git clone --depth 1 https://github.com/freeseek/gtc2vcf.git /tmp/gtc2vcf
 mkdir -p ~/.bcftools/plugins
-cp /tmp/gtc2vcf/gtc2vcf.c ~/.bcftools/plugins/
-/tmp/bin/bcftools-1.16/bcftools plugin -lv
+mkdir -p /tmp/bcftools-plugins
+cp /tmp/gtc2vcf/gtc2vcf.c /tmp/bcftools-plugins/
+export BCFTOOLS_PLUGINS=/tmp/bcftools-plugins
+/tmp/bin/bcftools/bcftools plugin -lv
 
 # Install apt-cel-convert binary from your GitHub
 curl -L https://github.com/Space-Pikachu/cel-to-g25-backend/raw/main/binaries/apt-cel-convert -o /tmp/bin/apt-cel-convert

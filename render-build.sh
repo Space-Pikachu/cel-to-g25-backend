@@ -18,7 +18,7 @@ apt-get update && \
 
 # Install APT Tools
 cd /tmp && \
-  git clone https://github.com/affymetrix/powertools.git && \
+  git clone https://<Space-Pikachu>:<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>@github.com/affymetrix/powertools.git && \
   cd powertools && \
   ./configure && \
   make -j2 && \

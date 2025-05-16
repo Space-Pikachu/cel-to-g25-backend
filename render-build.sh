@@ -29,9 +29,12 @@ mkdir -p /tmp/bin
 curl -L https://github.com/Space-Pikachu/cel-to-g25-backend/raw/main/binaries/apt-cel-convert -o /tmp/bin/apt-cel-convert
 chmod +x /tmp/bin/apt-cel-convert
 
-# Clone gtc2vcf
-cd /tmp && \
-  git clone --depth 1 https://github.com/freeseek/gtc2vcf.git /tmp/gtc2vcf
+# Install gtc2vcf plugin for bcftools (clean clone)
+rm -rf /tmp/gtc2vcf && \
+  git clone --depth 1 https://github.com/freeseek/gtc2vcf.git /tmp/gtc2vcf && \
+  mkdir -p ~/.bcftools/plugins && \
+  cp /tmp/gtc2vcf/gtc2vcf.c ~/.bcftools/plugins/ && \
+  bcftools plugin -lv
 
 # Install gtc2vcf plugin for bcftools (without conda)
 cd /tmp && \

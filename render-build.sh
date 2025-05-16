@@ -31,7 +31,7 @@ chmod +x /tmp/bin/apt-cel-convert
 
 # Clone gtc2vcf
 cd /tmp && \
-  git clone https://Space-Pikachu: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@github.com/Space-Pikachu/gtc2vcf.git
+  git clone --depth 1 https://github.com/freeseek/gtc2vcf.git /tmp/gtc2vcf
 
 # Add gtc2vcf as bcftools plugin
 mkdir -p ~/.bcftools/plugins && \

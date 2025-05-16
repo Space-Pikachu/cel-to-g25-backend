@@ -24,7 +24,8 @@ apt-get update && apt-get install -y \
 cd /tmp
 rm -rf htslib && git clone https://github.com/samtools/htslib.git
 cd htslib && git submodule update --init --recursive
-make && make install
+make -j$(nproc)
+export HTSLIB_PATH=/tmp/htslib
 
 # Download and install bcftools
 cd /tmp
@@ -41,10 +42,11 @@ git clone --depth 1 https://github.com/freeseek/gtc2vcf.git /tmp/gtc2vcf
 mkdir -p /tmp/bcftools-plugins
 
 gcc -O2 -Wall -shared -fPIC \
-  -I/usr/local/include \
+  -I$HTSLIB_PATH \
+  -L$HTSLIB_PATH \
+  -lhts \
   -o /tmp/bcftools-plugins/gtc2vcf.so \
-  /tmp/gtc2vcf/gtc2vcf.c \
-  -lhts
+  /tmp/gtc2vcf/gtc2vcf.c
 
 export BCFTOOLS_PLUGINS=/tmp/bcftools-plugins
 /tmp/bin/bcftools plugin -lv

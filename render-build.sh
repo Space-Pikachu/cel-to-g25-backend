@@ -14,31 +14,50 @@ apt-get update && apt-get install -y \
   libssl-dev \
   libbz2-dev \
   curl \
-  libhts-dev
+  autoconf \
+  libncurses5-dev
 
-# Download and install bcftools
+# Set up working directories
 mkdir -p /tmp/bin
-cd /tmp/bin
-curl -L https://github.com/samtools/bcftools/releases/download/1.16/bcftools-1.16.tar.bz2 -o /tmp/bcftools.tar.bz2
 cd /tmp
-tar -xvjf bcftools.tar.bz2
-cd bcftools-1.16 && make
-cp bcftools /tmp/bin/bcftools
 
-# Compile gtc2vcf plugin with HTSlib headers
-rm -rf /tmp/gtc2vcf
+#######################
+# Install HTSlib from source
+#######################
+git clone --depth 1 https://github.com/samtools/htslib.git
+cd htslib
+make
+make install PREFIX=/tmp/hts
+cd ..
+
+#######################
+# Install bcftools from source using HTSlib above
+#######################
+git clone --depth 1 https://github.com/samtools/bcftools.git
+cd bcftools
+make HTSDIR=/tmp/hts
+make install prefix=/tmp/bcftools
+cd ..
+
+# Add bcftools to path
+export PATH="/tmp/bcftools/bin:$PATH"
+
+#######################
+# Clone and build gtc2vcf plugin
+#######################
 git clone --depth 1 https://github.com/freeseek/gtc2vcf.git /tmp/gtc2vcf
 mkdir -p /tmp/bcftools-plugins
-
-gcc -O2 -Wall -shared -fPIC \
-  -I/usr/include/htslib \
-  -o /tmp/bcftools-plugins/gtc2vcf.so \
-  /tmp/gtc2vcf/gtc2vcf.c \
-  -lhts
-
+cp /tmp/gtc2vcf/gtc2vcf.c /tmp/bcftools-plugins/
 export BCFTOOLS_PLUGINS=/tmp/bcftools-plugins
-/tmp/bin/bcftools/bcftools plugin -lv
 
-# Install apt-cel-convert binary from your GitHub
+# Compile plugin against HTSlib
+gcc -g -Wall -O2 -I/tmp/hts -fPIC -shared /tmp/bcftools-plugins/gtc2vcf.c -o /tmp/bcftools-plugins/gtc2vcf.so
+
+# Test if bcftools recognizes plugin
+/tmp/bcftools/bin/bcftools plugin -lv
+
+#######################
+# Install apt-cel-convert binary
+#######################
 curl -L https://github.com/Space-Pikachu/cel-to-g25-backend/raw/main/binaries/apt-cel-convert -o /tmp/bin/apt-cel-convert
 chmod +x /tmp/bin/apt-cel-convert

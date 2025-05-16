@@ -14,50 +14,41 @@ apt-get update && apt-get install -y \
   libssl-dev \
   libbz2-dev \
   curl \
+  libhts-dev \
   autoconf \
-  libncurses5-dev
+  automake \
+  libtool \
+  bzip2
 
-# Set up working directories
-mkdir -p /tmp/bin
+# Download and build HTSlib
 cd /tmp
+rm -rf htslib && git clone https://github.com/samtools/htslib.git
+cd htslib && git submodule update --init --recursive
+make && make install
 
-#######################
-# Install HTSlib from source
-#######################
-git clone --depth 1 https://github.com/samtools/htslib.git
-cd htslib
-make
-make install PREFIX=/tmp/hts
-cd ..
+# Download and install bcftools
+cd /tmp
+curl -L https://github.com/samtools/bcftools/releases/download/1.16/bcftools-1.16.tar.bz2 -o bcftools.tar.bz2
+mkdir -p /tmp/bcftools-src
+cd /tmp/bcftools-src
+bunzip2 -c ../bcftools.tar.bz2 | tar -xvf -
+cd bcftools-1.16 && make
+cp bcftools /tmp/bin/bcftools
 
-#######################
-# Install bcftools from source using HTSlib above
-#######################
-git clone --depth 1 https://github.com/samtools/bcftools.git
-cd bcftools
-make HTSDIR=/tmp/hts
-make install prefix=/tmp/bcftools
-cd ..
-
-# Add bcftools to path
-export PATH="/tmp/bcftools/bin:$PATH"
-
-#######################
-# Clone and build gtc2vcf plugin
-#######################
+# Compile gtc2vcf plugin with HTSlib headers
+rm -rf /tmp/gtc2vcf
 git clone --depth 1 https://github.com/freeseek/gtc2vcf.git /tmp/gtc2vcf
 mkdir -p /tmp/bcftools-plugins
-cp /tmp/gtc2vcf/gtc2vcf.c /tmp/bcftools-plugins/
+
+gcc -O2 -Wall -shared -fPIC \
+  -I/usr/local/include \
+  -o /tmp/bcftools-plugins/gtc2vcf.so \
+  /tmp/gtc2vcf/gtc2vcf.c \
+  -lhts
+
 export BCFTOOLS_PLUGINS=/tmp/bcftools-plugins
+/tmp/bin/bcftools plugin -lv
 
-# Compile plugin against HTSlib
-gcc -g -Wall -O2 -I/tmp/hts -fPIC -shared /tmp/bcftools-plugins/gtc2vcf.c -o /tmp/bcftools-plugins/gtc2vcf.so
-
-# Test if bcftools recognizes plugin
-/tmp/bcftools/bin/bcftools plugin -lv
-
-#######################
-# Install apt-cel-convert binary
-#######################
+# Install apt-cel-convert binary from your GitHub
 curl -L https://github.com/Space-Pikachu/cel-to-g25-backend/raw/main/binaries/apt-cel-convert -o /tmp/bin/apt-cel-convert
 chmod +x /tmp/bin/apt-cel-convert

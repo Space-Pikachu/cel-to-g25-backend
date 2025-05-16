@@ -18,16 +18,16 @@ apt-get update && apt-get install -y \
 # Download and install static bcftools binary
 mkdir -p /tmp/bin
 cd /tmp/bin
-curl -L https://github.com/samtools/bcftools/releases/download/1.16/bcftools-1.16_linux.zip -o bcftools.zip
-unzip bcftools.zip
-chmod +x bcftools/bcftools
+curl -L https://github.com/samtools/bcftools/releases/download/1.16/bcftools-1.16_linux.tar.bz2 -o bcftools.tar.bz2
+tar -xjf bcftools.tar.bz2
+chmod +x bcftools-1.16/bcftools
 
 # Clone gtc2vcf and install plugin
 rm -rf /tmp/gtc2vcf
 git clone --depth 1 https://github.com/freeseek/gtc2vcf.git /tmp/gtc2vcf
 mkdir -p ~/.bcftools/plugins
 cp /tmp/gtc2vcf/gtc2vcf.c ~/.bcftools/plugins/
-/tmp/bin/bcftools/bcftools plugin -lv
+/tmp/bin/bcftools-1.16/bcftools plugin -lv
 
 # Install apt-cel-convert binary from your GitHub
 curl -L https://github.com/Space-Pikachu/cel-to-g25-backend/raw/main/binaries/apt-cel-convert -o /tmp/bin/apt-cel-convert

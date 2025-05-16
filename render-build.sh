@@ -25,9 +25,9 @@ cd /tmp && \
   make install
 
 # Download and install APT binaries from GitHub
-mkdir -p /usr/local/bin
-curl -L https://github.com/Space-Pikachu/cel-to-g25-backend/raw/main/binaries/apt-cel-convert -o /usr/local/bin/apt-cel-convert
-chmod +x /usr/local/bin/apt-cel-convert
+mkdir -p /tmp/bin
+curl -L https://github.com/Space-Pikachu/cel-to-g25-backend/raw/main/binaries/apt-cel-convert -o /tmp/bin/apt-cel-convert
+chmod +x /tmp/bin/apt-cel-convert
 
 # Clone gtc2vcf
 cd /tmp && \

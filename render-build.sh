@@ -15,12 +15,14 @@ apt-get update && apt-get install -y \
   libbz2-dev \
   curl
 
-# Download and install static bcftools binary
+# Download and install bcftools
 mkdir -p /tmp/bin
 cd /tmp/bin
-curl -L https://github.com/samtools/bcftools/releases/download/1.16/bcftools-1.16_linux.tar.bz2 -o bcftools.tar.bz2
-tar -xjf bcftools.tar.bz2
-chmod +x bcftools-1.16/bcftools
+curl -L https://github.com/samtools/bcftools/releases/download/1.16/bcftools-1.16.tar.bz2 -o bcftools.tar.bz2
+tar -xvjf bcftools.tar.bz2
+cd bcftools-1.16
+make
+cp bcftools /tmp/bin/
 
 # Clone gtc2vcf and install plugin
 rm -rf /tmp/gtc2vcf

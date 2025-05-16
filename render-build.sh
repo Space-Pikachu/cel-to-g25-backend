@@ -13,7 +13,8 @@ apt-get update && apt-get install -y \
   libcurl4-openssl-dev \
   libssl-dev \
   libbz2-dev \
-  curl
+  curl \
+  libhts-dev
 
 # Download and install bcftools
 mkdir -p /tmp/bin

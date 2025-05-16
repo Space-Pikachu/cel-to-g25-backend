@@ -34,6 +34,7 @@ mkdir -p /tmp/bcftools-src
 cd /tmp/bcftools-src
 bunzip2 -c ../bcftools.tar.bz2 | tar -xvf -
 cd bcftools-1.16 && make
+mkdir -p /tmp/bin
 cp bcftools /tmp/bin/bcftools
 
 # Compile gtc2vcf plugin with HTSlib headers

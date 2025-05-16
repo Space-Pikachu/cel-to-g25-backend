@@ -33,7 +33,17 @@ chmod +x /tmp/bin/apt-cel-convert
 cd /tmp && \
   git clone --depth 1 https://github.com/freeseek/gtc2vcf.git /tmp/gtc2vcf
 
-# Add gtc2vcf as bcftools plugin
-mkdir -p ~/.bcftools/plugins && \
-  cp /tmp/gtc2vcf/gtc2vcf.c ~/.bcftools/plugins/ && \
-  bcftools plugin -lv
+# Install Miniconda and bcftools
+cd /tmp
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/conda
+export PATH="/opt/conda/bin:$PATH"
+conda init bash
+conda create -y -n gtc2vcf-env bcftools
+source /opt/conda/bin/activate gtc2vcf-env
+
+# Compile gtc2vcf plugin
+git clone --depth 1 https://github.com/freeseek/gtc2vcf.git /tmp/gtc2vcf
+mkdir -p ~/.bcftools/plugins
+cp /tmp/gtc2vcf/gtc2vcf.c ~/.bcftools/plugins/
+bcftools plugin -lv

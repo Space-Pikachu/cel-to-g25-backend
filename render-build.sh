@@ -27,15 +27,14 @@ cd htslib
 make -j$(nproc)
 export HTSLIB_PATH=/tmp/htslib
 
-# Download and install bcftools from source
+# Download and build bcftools from GitHub (for internal headers like bcftools.h)
 cd /tmp
-curl -L https://github.com/samtools/bcftools/releases/download/1.16/bcftools-1.16.tar.bz2 -o bcftools.tar.bz2
-mkdir -p /tmp/bcftools-src
-cd /tmp/bcftools-src
-bunzip2 -c ../bcftools.tar.bz2 | tar -xvf -
-cd bcftools-1.16 && make
+rm -rf bcftools
+git clone --recurse-submodules https://github.com/samtools/bcftools.git
+cd bcftools && make
 mkdir -p /tmp/bin
 cp bcftools /tmp/bin/bcftools
+export BCFTOOLS_SRC=/tmp/bcftools
 
 # Compile gtc2vcf plugin using bcftools headers
 rm -rf /tmp/gtc2vcf
@@ -44,6 +43,7 @@ mkdir -p /tmp/bcftools-plugins
 
 gcc -O2 -Wall -shared -fPIC \
   -I$HTSLIB_PATH \
+  -I$BCFTOOLS_SRC \
   -L$HTSLIB_PATH \
   -lhts \
   -o /tmp/bcftools-plugins/gtc2vcf.so \

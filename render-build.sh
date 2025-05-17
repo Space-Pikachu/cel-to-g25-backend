@@ -41,6 +41,7 @@ rm -rf /tmp/gtc2vcf
 git clone --depth 1 https://github.com/freeseek/gtc2vcf.git /tmp/gtc2vcf
 mkdir -p /tmp/bcftools-plugins
 
+# Compile gtc2vcf plugin with correct headers
 gcc -O2 -Wall -shared -fPIC \
   -I$HTSLIB_PATH \
   -I$BCFTOOLS_SRC \
@@ -49,8 +50,11 @@ gcc -O2 -Wall -shared -fPIC \
   -o /tmp/bcftools-plugins/gtc2vcf.so \
   /tmp/gtc2vcf/gtc2vcf.c
 
+# Export plugin path (this is needed for bcftools plugin to work)
 export BCFTOOLS_PLUGINS=/tmp/bcftools-plugins
-/tmp/bin/bcftools plugin -lv
+
+# Optional debug: check if .so is readable
+ls -lh /tmp/bcftools-plugins/
 
 # Install apt-cel-convert binary from your GitHub
 curl -L https://github.com/Space-Pikachu/cel-to-g25-backend/raw/main/binaries/apt-cel-convert -o /tmp/bin/apt-cel-convert

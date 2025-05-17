@@ -1,13 +1,16 @@
 from flask import Flask, request, jsonify, send_file
+from flask_cors import CORS
 import os
 import subprocess
 from werkzeug.utils import secure_filename
+
+app = Flask(__name__)
+CORS(app)  # ← temporarily allow all origins for testing
 
 UPLOAD_FOLDER = 'uploads'
 OUTPUT_FOLDER = 'outputs'
 ALLOWED_EXTENSIONS = {'cel'}
 
-app = Flask(__name__)
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 

@@ -60,3 +60,6 @@ ls -lh /tmp/bcftools-plugins/
 mkdir -p /tmp/bin
 curl -L https://raw.githubusercontent.com/Space-Pikachu/cel-to-g25-backend/main/binaries/apt-cel-convert -o /tmp/bin/apt-cel-convert
 chmod +x /tmp/bin/apt-cel-convert
+
+# Confirm it exists
+ls -l /tmp/bin/apt-cel-convert

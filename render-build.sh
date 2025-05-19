@@ -56,6 +56,7 @@ export BCFTOOLS_PLUGINS=/tmp/bcftools-plugins
 # Optional debug: check if .so is readable
 ls -lh /tmp/bcftools-plugins/
 
-# Install apt-cel-convert into writable + executable path
-curl -L https://github.com/Space-Pikachu/cel-to-g25-backend/raw/main/binaries/apt-cel-convert -o /usr/bin/apt-cel-convert
-chmod +x /usr/bin/apt-cel-convert
+# Install apt-cel-convert into a writable directory
+mkdir -p /tmp/bin
+curl -L https://github.com/Space-Pikachu/cel-to-g25-backend/raw/main/binaries/apt-cel-convert -o /tmp/bin/apt-cel-convert
+chmod +x /tmp/bin/apt-cel-convert

@@ -58,5 +58,6 @@ ls -lh /tmp/bcftools-plugins/
 
 # Install apt-cel-convert into a writable directory
 mkdir -p /tmp/bin
-curl -L https://github.com/Space-Pikachu/cel-to-g25-backend/raw/main/binaries/apt-cel-convert -o /tmp/bin/apt-cel-convert
+git clone --depth 1 https://github.com/Space-Pikachu/cel-to-g25-backend.git /tmp/cel-to-g25-backend
+cp /tmp/cel-to-g25-backend/binaries/apt-cel-convert /tmp/bin/apt-cel-convert
 chmod +x /tmp/bin/apt-cel-convert

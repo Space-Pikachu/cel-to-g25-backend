@@ -56,10 +56,17 @@ export BCFTOOLS_PLUGINS=/tmp/bcftools-plugins
 # Optional debug: check if .so is readable
 ls -lh /tmp/bcftools-plugins/
 
-# Download apt-cel-convert
+# Ensure bin directory exists
 mkdir -p /tmp/bin
-curl -L https://raw.githubusercontent.com/Space-Pikachu/cel-to-g25-backend/main/binaries/apt-cel-convert -o /tmp/bin/apt-cel-convert
+
+# Download apt-cel-convert binary
+echo "Downloading apt-cel-convert..."
+curl -fSL https://raw.githubusercontent.com/Space-Pikachu/cel-to-g25-backend/main/binaries/apt-cel-convert -o /tmp/bin/apt-cel-convert || { echo "Download failed"; exit 1; }
+
+# Make it executable
 chmod +x /tmp/bin/apt-cel-convert
 
-# Confirm it exists
-ls -l /tmp/bin/apt-cel-convert
+# Print verification info
+echo "Checking downloaded file..."
+ls -l /tmp/bin/apt-cel-convert || echo "apt-cel-convert not found!"
+file /tmp/bin/apt-cel-convert || echo "apt-cel-convert not a valid file"

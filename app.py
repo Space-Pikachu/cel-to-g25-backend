@@ -43,7 +43,7 @@ def convert():
 
     # Step 1: Run APT Tools to generate CHP
     chp_path = cel_path.replace('.CEL', '.CHP')
-    subprocess.run(['apt-cel-convert', '-o', UPLOAD_FOLDER, '-a', 'AxiomGT1', cel_path], check=True)
+    subprocess.run(['/tmp/bin/apt-cel-convert', '-o', UPLOAD_FOLDER, '-a', 'AxiomGT1', cel_path], check=True)
 
     # Step 2: Convert CHP to VCF using gtc2vcf via bcftools plugin
     vcf_path = cel_path.replace('.CEL', '.vcf')

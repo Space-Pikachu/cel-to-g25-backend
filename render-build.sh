@@ -61,5 +61,5 @@ git clone https://github.com/Space-Pikachu/cel-to-g25-backend.git /tmp/cel-to-g2
 
 # Copy apt-cel-convert from repo to tmp/bin
 mkdir -p /tmp/bin
-cp /tmp/cel-to-g25-backend/binaries/apt-cel-convert /tmp/bin/apt-cel-convert
+cp /tmp/cel-to-g25-backend/apt-cel-convert /tmp/bin/apt-cel-convert
 chmod +x /tmp/bin/apt-cel-convert

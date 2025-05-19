@@ -57,6 +57,6 @@ export BCFTOOLS_PLUGINS=/tmp/bcftools-plugins
 ls -lh /tmp/bcftools-plugins/
 
 # Install apt-cel-convert binary from your GitHub
-mkdir -p /tmp/bin
-curl -L https://github.com/Space-Pikachu/cel-to-g25-backend/raw/main/binaries/apt-cel-convert -o /tmp/bin/apt-cel-convert
-chmod +x /tmp/bin/apt-cel-convert
+mkdir -p /usr/local/bin
+curl -L https://github.com/Space-Pikachu/cel-to-g25-backend/raw/main/binaries/apt-cel-convert -o /usr/local/bin/apt-cel-convert
+chmod +x /usr/local/bin/apt-cel-convert

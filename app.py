@@ -31,35 +31,50 @@ def ping():
 
 @app.route('/convert', methods=['POST'])
 def convert():
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file part'}), 400
-    file = request.files['file']
-    if file.filename == '' or not allowed_file(file.filename):
-        return jsonify({'error': 'Invalid or no file selected'}), 400
+    try:
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file part'}), 400
+        file = request.files['file']
+        if file.filename == '' or not allowed_file(file.filename):
+            return jsonify({'error': 'Invalid or no file selected'}), 400
 
-    filename = secure_filename(file.filename)
-    cel_path = os.path.join(UPLOAD_FOLDER, filename)
-    file.save(cel_path)
+        filename = secure_filename(file.filename)
+        cel_path = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(cel_path)
+        print(f"[DEBUG] Saved CEL file to {cel_path}")
 
-    # Step 1: Run APT Tools to generate CHP
-    chp_path = cel_path.replace('.CEL', '.CHP')
-    subprocess.run(['/tmp/bin/apt-cel-convert', '-o', UPLOAD_FOLDER, '-a', 'AxiomGT1', cel_path], check=True)
+        # Step 1: Run APT Tools to generate CHP
+        chp_path = cel_path.replace('.CEL', '.CHP')
+        subprocess.run([
+            '/tmp/bin/apt-cel-convert', '-o', UPLOAD_FOLDER, '-a', 'AxiomGT1', cel_path
+        ], check=True)
+        print(f"[DEBUG] Generated CHP file at {chp_path}")
 
-    # Step 2: Convert CHP to VCF using gtc2vcf via bcftools plugin
-    vcf_path = cel_path.replace('.CEL', '.vcf')
-    subprocess.run([
-        'bcftools', '+gtc2vcf',
-        '--chps', chp_path,
-        '--fasta-ref', 'reference.fasta',
-        '--annotation-files', 'Axiom_Annotation.r1.csv',
-        '-o', vcf_path
-    ], check=True)
+        # Step 2: Convert CHP to VCF
+        vcf_path = cel_path.replace('.CEL', '.vcf')
+        subprocess.run([
+            'bcftools', '+gtc2vcf',
+            '--chps', chp_path,
+            '--fasta-ref', 'reference.fasta',
+            '--annotation-files', 'Axiom_Annotation.r1.csv',
+            '-o', vcf_path
+        ], check=True)
+        print(f"[DEBUG] Converted VCF file at {vcf_path}")
 
-    # Step 3: Convert VCF to 23andMe TXT
-    txt_path = cel_path.replace('.CEL', '.txt')
-    subprocess.run(['python3', 'vcf_to_23andme.py', vcf_path, txt_path], check=True)
+        # Step 3: Convert to 23andMe TXT
+        txt_path = cel_path.replace('.CEL', '.txt')
+        subprocess.run(['python3', 'vcf_to_23andme.py', vcf_path, txt_path], check=True)
+        print(f"[DEBUG] Converted TXT file at {txt_path}")
 
-    return send_file(txt_path, as_attachment=True)
+        return send_file(txt_path, as_attachment=True)
+
+    except subprocess.CalledProcessError as sub_err:
+        print(f"[ERROR] Subprocess failed: {sub_err}")
+        return jsonify({'error': f'Subprocess failed: {str(sub_err)}'}), 500
+
+    except Exception as e:
+        print(f"[ERROR] General exception: {e}")
+        return jsonify({'error': f'Unexpected server error: {str(e)}'}), 500
 
 
 @app.route("/health")

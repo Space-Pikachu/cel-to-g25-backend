@@ -59,11 +59,10 @@ ls -lh /tmp/bcftools-plugins/
 # Clone repo containing binary
 git clone https://github.com/Space-Pikachu/cel-to-g25-backend.git /tmp/cel-to-g25-backend
 
-# Copy apt-cel-convert from root of repo
+# Copy apt-cel-convert from repo root
 mkdir -p /tmp/bin
 cp /tmp/cel-to-g25-backend/apt-cel-convert /tmp/bin/apt-cel-convert
 chmod +x /tmp/bin/apt-cel-convert
 
-# Confirm apt-cel-convert is present
-echo "Checking apt-cel-convert binary:"
-ls -lh /tmp/bin/apt-cel-convert || echo "apt-cel-convert not found!"
+# Confirm binary presence
+ls -l /tmp/bin/apt-cel-convert

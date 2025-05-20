@@ -63,3 +63,7 @@ git clone https://github.com/Space-Pikachu/cel-to-g25-backend.git /tmp/cel-to-g2
 mkdir -p /tmp/bin
 cp /tmp/cel-to-g25-backend/apt-cel-convert /tmp/bin/apt-cel-convert
 chmod +x /tmp/bin/apt-cel-convert
+
+# Confirm apt-cel-convert is present
+echo "Checking apt-cel-convert binary:"
+ls -lh /tmp/bin/apt-cel-convert || echo "apt-cel-convert not found!"

@@ -56,8 +56,11 @@ export BCFTOOLS_PLUGINS=/tmp/bcftools-plugins
 # Optional debug: check if .so is readable
 ls -lh /tmp/bcftools-plugins/
 
+# Clone your GitHub repo into /tmp/cel-to-g25-backend to access binaries/
+REPO_DIR="/tmp/cel-to-g25-backend"
+git clone https://github.com/Space-Pikachu/cel-to-g25-backend.git $REPO_DIR
+
 # Copy apt-cel-convert from repo into /tmp/bin
-REPO_DIR=$(pwd)
 mkdir -p /tmp/bin
 cp "$REPO_DIR/binaries/apt-cel-convert" /tmp/bin/apt-cel-convert
 chmod +x /tmp/bin/apt-cel-convert

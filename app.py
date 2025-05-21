@@ -51,10 +51,11 @@ def convert():
             subprocess.run(["chmod", "+x", runtime_bin], check=True)
             print("[DEBUG] Copied apt-cel-convert binary to /tmp/bin")
 
-        # Step 1: Run APT Tools to generate CHP
-        chp_path = cel_path.replace('.CEL', '.CHP')
-        subprocess.run([runtime_bin, '-o', UPLOAD_FOLDER, '-a', 'AxiomGT1', cel_path], check=True)
-        print(f"[DEBUG] Generated CHP file at {chp_path}")
+        # Step 1: TEMP: Show apt-cel-convert help output
+print("[DEBUG] Running apt-cel-convert --help")
+result = subprocess.run([runtime_bin, '--help'], capture_output=True, text=True)
+print(f"[DEBUG] Help Output:\n{result.stdout}\n{result.stderr}")
+return jsonify({"error": "APT binary help output printed to log for debugging"}), 500
 
         # Step 2: Convert CHP to VCF
         vcf_path = cel_path.replace('.CEL', '.vcf')

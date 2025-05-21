@@ -51,11 +51,19 @@ def convert():
             subprocess.run(["chmod", "+x", runtime_bin], check=True)
             print("[DEBUG] Copied apt-cel-convert binary to /tmp/bin")
 
-        # 🧪 TEMP DEBUG: Show --help output to confirm flags
-        print("[DEBUG] Running apt-cel-convert --help")
-        result = subprocess.run([runtime_bin, '--help'], capture_output=True, text=True)
-        print(f"[DEBUG] Help Output:\n{result.stdout}\n{result.stderr}")
-        return jsonify({"error": "APT binary help output printed to log for debugging"}), 500
+        # ✅ Write CEL file path to temp file for apt-cel-convert
+        cel_list_path = os.path.join(UPLOAD_FOLDER, "cel-files.txt")
+        with open(cel_list_path, "w") as f:
+            f.write(cel_path + "\n")
+
+        # ✅ Step 1: Run apt-cel-convert using proper flags
+        subprocess.run([
+            runtime_bin,
+            "--format", "xda",
+            "--out-dir", UPLOAD_FOLDER,
+            "--cel-files", cel_list_path
+        ], check=True)
+        print(f"[DEBUG] apt-cel-convert completed using {cel_list_path}")
 
     except subprocess.CalledProcessError as sub_err:
         print(f"[ERROR] Subprocess failed: {sub_err}")

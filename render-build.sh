@@ -56,16 +56,5 @@ export BCFTOOLS_PLUGINS=/tmp/bcftools-plugins
 # Optional debug: check if .so is readable
 ls -lh /tmp/bcftools-plugins/
 
-# Ensure app directory exists for static files
-mkdir -p /app/bin
-
-# Clone your repo and copy the binary from binaries/
-git clone https://github.com/Space-Pikachu/cel-to-g25-backend.git /tmp/cel-repo
-
-# Move apt-cel-convert binary to /app/bin
-cp /tmp/cel-repo/binaries/apt-cel-convert /app/bin/apt-cel-convert
-chmod +x /app/bin/apt-cel-convert
-
-# Final check
-echo "✅ apt-cel-convert in /app/bin:"
-ls -l /app/bin/apt-cel-convert
+# Skip apt-cel-convert setup at build time — handled at runtime by app.py
+echo "[INFO] Skipping apt-cel-convert copy during build"

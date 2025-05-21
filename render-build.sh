@@ -60,6 +60,10 @@ ls -lh /tmp/bcftools-plugins/
 REPO_DIR="/tmp/cel-to-g25-backend"
 git clone https://github.com/Space-Pikachu/cel-to-g25-backend.git $REPO_DIR
 
+# List files for debugging
+echo "📂 Repo contents:"
+ls -lh $REPO_DIR/binaries
+
 # Copy apt-cel-convert from repo into /tmp/bin
 mkdir -p /tmp/bin
 cp "$REPO_DIR/binaries/apt-cel-convert" /tmp/bin/apt-cel-convert

@@ -43,9 +43,17 @@ def convert():
         file.save(cel_path)
         print(f"[DEBUG] Saved CEL file to {cel_path}")
 
+        # ✅ Runtime: Copy apt-cel-convert from repo to /tmp/bin
+        runtime_bin = "/tmp/bin/apt-cel-convert"
+        if not os.path.exists(runtime_bin):
+            os.makedirs("/tmp/bin", exist_ok=True)
+            subprocess.run(["cp", "binaries/apt-cel-convert", runtime_bin], check=True)
+            subprocess.run(["chmod", "+x", runtime_bin], check=True)
+            print("[DEBUG] Copied apt-cel-convert binary to /tmp/bin")
+
         # Step 1: Run APT Tools to generate CHP
         chp_path = cel_path.replace('.CEL', '.CHP')
-        subprocess.run(['/app/bin/apt-cel-convert', '-o', UPLOAD_FOLDER, '-a', 'AxiomGT1', cel_path], check=True)
+        subprocess.run([runtime_bin, '-o', UPLOAD_FOLDER, '-a', 'AxiomGT1', cel_path], check=True)
         print(f"[DEBUG] Generated CHP file at {chp_path}")
 
         # Step 2: Convert CHP to VCF

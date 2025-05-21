@@ -51,29 +51,11 @@ def convert():
             subprocess.run(["chmod", "+x", runtime_bin], check=True)
             print("[DEBUG] Copied apt-cel-convert binary to /tmp/bin")
 
-        # Step 1: TEMP: Show apt-cel-convert help output
-print("[DEBUG] Running apt-cel-convert --help")
-result = subprocess.run([runtime_bin, '--help'], capture_output=True, text=True)
-print(f"[DEBUG] Help Output:\n{result.stdout}\n{result.stderr}")
-return jsonify({"error": "APT binary help output printed to log for debugging"}), 500
-
-        # Step 2: Convert CHP to VCF
-        vcf_path = cel_path.replace('.CEL', '.vcf')
-        subprocess.run([
-            'bcftools', '+gtc2vcf',
-            '--chps', chp_path,
-            '--fasta-ref', 'reference.fasta',
-            '--annotation-files', 'Axiom_Annotation.r1.csv',
-            '-o', vcf_path
-        ], check=True)
-        print(f"[DEBUG] Converted VCF file at {vcf_path}")
-
-        # Step 3: Convert to 23andMe TXT
-        txt_path = cel_path.replace('.CEL', '.txt')
-        subprocess.run(['python3', 'vcf_to_23andme.py', vcf_path, txt_path], check=True)
-        print(f"[DEBUG] Converted TXT file at {txt_path}")
-
-        return send_file(txt_path, as_attachment=True)
+        # 🧪 TEMP DEBUG: Show --help output to confirm flags
+        print("[DEBUG] Running apt-cel-convert --help")
+        result = subprocess.run([runtime_bin, '--help'], capture_output=True, text=True)
+        print(f"[DEBUG] Help Output:\n{result.stdout}\n{result.stderr}")
+        return jsonify({"error": "APT binary help output printed to log for debugging"}), 500
 
     except subprocess.CalledProcessError as sub_err:
         print(f"[ERROR] Subprocess failed: {sub_err}")

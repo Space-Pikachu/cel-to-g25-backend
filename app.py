@@ -43,7 +43,7 @@ def convert():
         file.save(cel_path)
         print(f"[DEBUG] Saved CEL file to {cel_path}")
 
-        # ✅ Runtime: Copy apt-cel-convert from repo to /tmp/bin
+        # Copy apt-cel-convert to /tmp/bin at runtime
         runtime_bin = "/tmp/bin/apt-cel-convert"
         if not os.path.exists(runtime_bin):
             os.makedirs("/tmp/bin", exist_ok=True)
@@ -51,12 +51,11 @@ def convert():
             subprocess.run(["chmod", "+x", runtime_bin], check=True)
             print("[DEBUG] Copied apt-cel-convert binary to /tmp/bin")
 
-        # ✅ Write CEL file path to temp file for apt-cel-convert
+        # Step 1: CEL → CHP
         cel_list_path = os.path.join(UPLOAD_FOLDER, "cel-files.txt")
         with open(cel_list_path, "w") as f:
             f.write(cel_path + "\n")
 
-        # ✅ Step 1: Run apt-cel-convert using proper flags
         subprocess.run([
             runtime_bin,
             "--format", "xda",
@@ -64,6 +63,25 @@ def convert():
             "--cel-files", cel_list_path
         ], check=True)
         print(f"[DEBUG] apt-cel-convert completed using {cel_list_path}")
+
+        # Step 2: CHP → VCF
+        chp_path = cel_path.replace('.CEL', '.CHP')
+        vcf_path = cel_path.replace('.CEL', '.vcf')
+        subprocess.run([
+            'bcftools', '+gtc2vcf',
+            '--chps', chp_path,
+            '--fasta-ref', '/app/reference/reference.fa',
+            '--annotation-files', 'Axiom_Annotation.r1.csv',
+            '-o', vcf_path
+        ], check=True)
+        print(f"[DEBUG] VCF generated at {vcf_path}")
+
+        # Step 3: VCF → TXT
+        txt_path = cel_path.replace('.CEL', '.txt')
+        subprocess.run(['python3', 'vcf_to_23andme.py', vcf_path, txt_path], check=True)
+        print(f"[DEBUG] TXT file created at {txt_path}")
+
+        return send_file(txt_path, as_attachment=True)
 
     except subprocess.CalledProcessError as sub_err:
         print(f"[ERROR] Subprocess failed: {sub_err}")

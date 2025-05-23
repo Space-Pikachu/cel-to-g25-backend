@@ -6,17 +6,18 @@ from werkzeug.utils import secure_filename
 import urllib.request
 
 app = Flask(__name__)
-CORS(app)  # ← temporarily allow all origins for testing
+CORS(app)
 
 UPLOAD_FOLDER = 'uploads'
 OUTPUT_FOLDER = 'outputs'
 ALLOWED_EXTENSIONS = {'cel'}
+REFERENCE_FASTA = 'reference.fa'
+ANNOTATION_CSV = 'Axiom_Annotation.r1.csv'
+REFERENCE_URL = 'https://download1324.mediafire.com/a5k1ijo792kgANBj6mpPm_aeTwskLeQr6ybzgeT0uW2wIsq0yCr5zMccSWY4kQDpnaTPFRCKUCAoelO9Oi4p8GkCQRQgsaUe3-Pm7ksHA3xLH_QFi7zSRkeM7WNuk0MQWolLUrkrMxZ8Zzs_2PG_aUCp10MGiIy-RhIwqbYxQeUOBw/l2nuwhg89bbtnwj/reference.fa'
+ANNOTATION_URL = 'https://download937.mediafire.com/7m7wrexnhnbgUTGI1TBTE8SGS5lOyEVSddDkEFuWA0FD4QDdq039jTvD1rKuPYTtUQebZSnImUOoLIK_70UiMWj9gkyYokw04KN0ZpPpkZ0y29IjK3b93LiiaiZ76_jpwHPdGEyqihouxrO_3CQsswEZRCGB8ZjKI91WAOqK7Vo3iA/p5iapfestqmk0e8/Axiom_Annotation.r1.csv'
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
-
-ANNOTATION_URL = "https://download937.mediafire.com/7m7wrexnhnbgUTGI1TBTE8SGS5lOyEVSddDkEFuWA0FD4QDdq039jTvD1rKuPYTtUQebZSnImUOoLIK_70UiMWj9gkyYokw04KN0ZpPpkZ0y29IjK3b93LiiaiZ76_jpwHPdGEyqihouxrO_3CQsswEZRCGB8ZjKI91WAOqK7Vo3iA/p5iapfestqmk0e8/Axiom_Annotation.r1.csv"
-REFERENCE_URL = "https://download1324.mediafire.com/a5k1ijo792kgANBj6mpPm_aeTwskLeQr6ybzgeT0uW2wIsq0yCr5zMccSWY4kQDpnaTPFRCKUCAoelO9Oi4p8GkCQRQgsaUe3-Pm7ksHA3xLH_QFi7zSRkeM7WNuk0MQWolLUrkrMxZ8Zzs_2PG_aUCp10MGiIy-RhIwqbYxQeUOBw/l2nuwhg89bbtnwj/reference.fa"
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -43,7 +44,7 @@ def convert():
         file.save(cel_path)
         print(f"[DEBUG] Saved CEL file to {cel_path}")
 
-        # ✅ Runtime: Copy apt-cel-convert from repo to /tmp/bin
+        # Download apt-cel-convert if needed
         runtime_bin = "/tmp/bin/apt-cel-convert"
         if not os.path.exists(runtime_bin):
             os.makedirs("/tmp/bin", exist_ok=True)
@@ -51,48 +52,47 @@ def convert():
             subprocess.run(["chmod", "+x", runtime_bin], check=True)
             print("[DEBUG] Copied apt-cel-convert binary to /tmp/bin")
 
-        # ✅ Step 0: Download reference and annotation files if needed
-        reference_path = "reference.fa"
-        if not os.path.exists(reference_path):
+        # Ensure reference.fa exists
+        if not os.path.exists(REFERENCE_FASTA):
             print("[INFO] Downloading reference.fa...")
-            urllib.request.urlretrieve(REFERENCE_URL, reference_path)
-            print("[INFO] reference.fa downloaded")
+            urllib.request.urlretrieve(REFERENCE_URL, REFERENCE_FASTA)
 
-        annotation_path = "Axiom_Annotation.r1.csv"
-        if not os.path.exists(annotation_path):
+        # Ensure Axiom_Annotation.r1.csv exists
+        if not os.path.exists(ANNOTATION_CSV):
             print("[INFO] Downloading Axiom_Annotation.r1.csv...")
-            urllib.request.urlretrieve(ANNOTATION_URL, annotation_path)
-            print("[INFO] Axiom_Annotation.r1.csv downloaded")
+            urllib.request.urlretrieve(ANNOTATION_URL, ANNOTATION_CSV)
 
-        # ✅ Write CEL file path to temp file for apt-cel-convert
         cel_list_path = os.path.join(UPLOAD_FOLDER, "cel-files.txt")
         with open(cel_list_path, "w") as f:
             f.write(cel_path + "\n")
 
-        # ✅ Step 1: Run apt-cel-convert using proper flags
+        chp_path = cel_path.replace('.CEL', '.CHP')
         subprocess.run([
             runtime_bin,
             "--format", "xda",
             "--out-dir", UPLOAD_FOLDER,
             "--cel-files", cel_list_path
         ], check=True)
+        if not os.path.exists(chp_path):
+            raise FileNotFoundError(f"CHP file not found: {chp_path}")
         print(f"[DEBUG] apt-cel-convert completed using {cel_list_path}")
 
-        # ✅ Step 2: Convert CHP to VCF
-        chp_path = cel_path.replace('.CEL', '.CHP')
         vcf_path = cel_path.replace('.CEL', '.vcf')
         subprocess.run([
             'bcftools', '+gtc2vcf',
             '--chps', chp_path,
-            '--fasta-ref', reference_path,
-            '--annotation-files', annotation_path,
+            '--fasta-ref', REFERENCE_FASTA,
+            '--annotation-files', ANNOTATION_CSV,
             '-o', vcf_path
         ], check=True)
+        if not os.path.exists(vcf_path):
+            raise FileNotFoundError(f"VCF file not found: {vcf_path}")
         print(f"[DEBUG] Converted VCF file at {vcf_path}")
 
-        # ✅ Step 3: Convert VCF to TXT
         txt_path = cel_path.replace('.CEL', '.txt')
         subprocess.run(['python3', 'vcf_to_23andme.py', vcf_path, txt_path], check=True)
+        if not os.path.exists(txt_path):
+            raise FileNotFoundError(f"TXT file not found: {txt_path}")
         print(f"[DEBUG] Converted TXT file at {txt_path}")
 
         return send_file(txt_path, as_attachment=True)

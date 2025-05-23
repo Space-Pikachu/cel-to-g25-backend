@@ -56,5 +56,15 @@ export BCFTOOLS_PLUGINS=/tmp/bcftools-plugins
 # Optional debug: check if .so is readable
 ls -lh /tmp/bcftools-plugins/
 
+# Download reference genome and index
+mkdir -p /app/reference
+
+curl -L "https://download1324.mediafire.com/a5k1ijo792kgANBj6mpPm_aeTwskLeQr6ybzgeT0uW2wIsq0yCr5zMccSWY4kQDpnaTPFRCKUCAoelO9Oi4p8GkCQRQgsaUe3-Pm7ksHA3xLH_QFi7zSRkeM7WNuk0MQWolLUrkrMxZ8Zzs_2PG_aUCp10MGiIy-RhIwqbYxQeUOBw/l2nuwhg89bbtnwj/reference.fa" -o /app/reference/reference.fa
+
+curl -L "https://download1085.mediafire.com/j6772ngye28g3mdPET0qqqhjQE4auRXWyoprvp6X3kPh3z9plyCU2YlfrLEaR8WHiZnsO7LmkCKtKScZM8YFa5LKtGf1aaRmr7UNmO4_xX-LHRh_uTmWFu7SRsQLrnR-PNtdT9lBr5zLeZF-t-8TlbttO_EGZ80OR23Rv5Lyk9gwlg/62mny5kk5qx7oju/reference.fa.fai" -o /app/reference/reference.fa.fai
+
+# Confirm files downloaded
+ls -lh /app/reference
+
 # Skip apt-cel-convert setup at build time — handled at runtime by app.py
 echo "[INFO] Skipping apt-cel-convert copy during build"

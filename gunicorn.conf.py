@@ -1,3 +1,5 @@
 # gunicorn.conf.py
-timeout = 180  # allow long-running conversions
-print("[DEBUG] gunicorn.conf.py loaded")
+timeout = 300  # seconds (5 minutes)
+worker_class = "sync"
+workers = 1
+threads = 1

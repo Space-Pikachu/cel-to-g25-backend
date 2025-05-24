@@ -59,9 +59,9 @@ ls -lh /tmp/bcftools-plugins/
 # Download reference genome and index into writable temp directory
 mkdir -p /tmp/reference
 
-curl -L "https://download1324.mediafire.com/a5k1ijo792kgANBj6mpPm_aeTwskLeQr6ybzgeT0uW2wIsq0yCr5zMccSWY4kQDpnaTPFRCKUCAoelO9Oi4p8GkCQRQgsaUe3-Pm7ksHA3xLH_QFi7zSRkeM7WNuk0MQWolLUrkrMxZ8Zzs_2PG_aUCp10MGiIy-RhIwqbYxQeUOBw/l2nuwhg89bbtnwj/reference.fa" -o /tmp/reference/reference.fa
+curl -L "https://download1324.mediafire.com/nhricwu77wegZxA1GMSUGXpGRWEnx_v_eMLcYjVAY8y2vsEp-wWweGimw1kZsZulPwAivyzOq-9zo8fAtsjEi4WeQjb_n-PsCEIR9YdChHBvaSkU_FlEVxSfH27Bs3N40xpGeMT0enKJZOQQK2J8FOJOdl1MNNJY1xdtoY-0RUaTY6k/l2nuwhg89bbtnwj/reference.fa" -o /tmp/reference/reference.fa
 
-curl -L "https://download1085.mediafire.com/j6772ngye28g3mdPET0qqqhjQE4auRXWyoprvp6X3kPh3z9plyCU2YlfrLEaR8WHiZnsO7LmkCKtKScZM8YFa5LKtGf1aaRmr7UNmO4_xX-LHRh_uTmWFu7SRsQLrnR-PNtdT9lBr5zLeZF-t-8TlbttO_EGZ80OR23Rv5Lyk9gwlg/62mny5kk5qx7oju/reference.fa.fai" -o /tmp/reference/reference.fa.fai
+curl -L "https://download1085.mediafire.com/xykh6s6x8qzg8IyMOIM6mbVej1u8L59dY7WuF4p5vFmHciylfzELEgb_41S5uA6BSbs8v56jXllJWcZvu5XBKPfyd3gGouFPBbR7qWnjHz5qDns1WLEMemTJCjsAKFdIIGvPA2PkmiCluZrWdPPG7ChQIBe6NdqcCtdVZ0-NkZGS_iA/62mny5kk5qx7oju/reference.fa.fai" -o /tmp/reference/reference.fa.fai
 
 # Confirm files downloaded
 ls -lh /tmp/reference

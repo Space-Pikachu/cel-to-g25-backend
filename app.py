@@ -12,8 +12,8 @@ CORS(app)
 UPLOAD_FOLDER = 'uploads'
 OUTPUT_FOLDER = 'outputs'
 ALLOWED_EXTENSIONS = {'cel'}
-REFERENCE_URL = 'https://download1324.mediafire.com/a5k1ijo792kgANBj6mpPm_aeTwskLeQr6ybzgeT0uW2wIsq0yCr5zMccSWY4kQDpnaTPFRCKUCAoelO9Oi4p8GkCQRQgsaUe3-Pm7ksHA3xLH_QFi7zSRkeM7WNuk0MQWolLUrkrMxZ8Zzs_2PG_aUCp10MGiIy-RhIwqbYxQeUOBw/l2nuwhg89bbtnwj/reference.fa'
-ANNOTATION_URL = 'https://download937.mediafire.com/7m7wrexnhnbgUTGI1TBTE8SGS5lOyEVSddDkEFuWA0FD4QDdq039jTvD1rKuPYTtUQebZSnImUOoLIK_70UiMWj9gkyYokw04KN0ZpPpkZ0y29IjK3b93LiiaiZ76_jpwHPdGEyqihouxrO_3CQsswEZRCGB8ZjKI91WAOqK7Vo3iA/p5iapfestqmk0e8/Axiom_Annotation.r1.csv'
+REFERENCE_URL = 'https://download1324.mediafire.com/nhricwu77wegZxA1GMSUGXpGRWEnx_v_eMLcYjVAY8y2vsEp-wWweGimw1kZsZulPwAivyzOq-9zo8fAtsjEi4WeQjb_n-PsCEIR9YdChHBvaSkU_FlEVxSfH27Bs3N40xpGeMT0enKJZOQQK2J8FOJOdl1MNNJY1xdtoY-0RUaTY6k/l2nuwhg89bbtnwj/reference.fa'
+ANNOTATION_URL = 'https://download937.mediafire.com/yi7a10tfdiegcTL9sDFOE7HgWftKxRki10oDadPEYuqZe3yQpOmGwRj9qDHYz55wuLoklbaWFKEw49u1NLTBhlVfLxb8xc1RvJwtUJ8NG5Lg02eMdcmYnpYgb6wPGYTqKjoLYgLaSGVKcC1I1JBW1EiBS12ZxJrClJ7MZpPtUCy10Xs/p5iapfestqmk0e8/Axiom_Annotation.r1.csv'
 REFERENCE_FASTA_PATH = '/tmp/reference/reference.fa'
 ANNOTATION_CSV_PATH = '/tmp/reference/Axiom_Annotation.r1.csv'
 

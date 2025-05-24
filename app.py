@@ -33,7 +33,7 @@ def ping():
 
 @app.route('/convert', methods=['POST'])
 def convert():
-    try:
+        try:
         if 'file' not in request.files:
             return jsonify({'error': 'No file part'}), 400
         file = request.files['file']

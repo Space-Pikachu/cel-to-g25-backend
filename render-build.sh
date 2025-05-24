@@ -69,5 +69,5 @@ ls -lh /tmp/reference
 # Skip apt-cel-convert setup at build time — handled at runtime by app.py
 echo "[INFO] Skipping apt-cel-convert copy during build"
 
-# Set custom Gunicorn timeout for long CEL conversion jobs
+# Create Procfile at the project root to override default timeout
 echo "web: gunicorn app:app --timeout 300 --bind 0.0.0.0:\$PORT" > /opt/render/project/src/Procfile

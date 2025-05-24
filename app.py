@@ -1,9 +1,10 @@
-I'm confused what fix(es) to place in app.py and where. Below is my full app.py script. Please specify exactly what to replace and with which specific code:  from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import os
 import subprocess
 from werkzeug.utils import secure_filename
 import urllib.request
+import time
 
 app = Flask(__name__)
 CORS(app)
@@ -11,8 +12,8 @@ CORS(app)
 UPLOAD_FOLDER = 'uploads'
 OUTPUT_FOLDER = 'outputs'
 ALLOWED_EXTENSIONS = {'cel'}
-REFERENCE_FASTA = 'reference.fa'
-ANNOTATION_CSV = 'Axiom_Annotation.r1.csv'
+REFERENCE_FASTA = '/tmp/reference/reference.fa'
+ANNOTATION_CSV = '/tmp/reference/Axiom_Annotation.r1.csv'
 REFERENCE_URL = 'https://download1324.mediafire.com/a5k1ijo792kgANBj6mpPm_aeTwskLeQr6ybzgeT0uW2wIsq0yCr5zMccSWY4kQDpnaTPFRCKUCAoelO9Oi4p8GkCQRQgsaUe3-Pm7ksHA3xLH_QFi7zSRkeM7WNuk0MQWolLUrkrMxZ8Zzs_2PG_aUCp10MGiIy-RhIwqbYxQeUOBw/l2nuwhg89bbtnwj/reference.fa'
 ANNOTATION_URL = 'https://download937.mediafire.com/7m7wrexnhnbgUTGI1TBTE8SGS5lOyEVSddDkEFuWA0FD4QDdq039jTvD1rKuPYTtUQebZSnImUOoLIK_70UiMWj9gkyYokw04KN0ZpPpkZ0y29IjK3b93LiiaiZ76_jpwHPdGEyqihouxrO_3CQsswEZRCGB8ZjKI91WAOqK7Vo3iA/p5iapfestqmk0e8/Axiom_Annotation.r1.csv'
 
@@ -66,34 +67,43 @@ def convert():
         with open(cel_list_path, "w") as f:
             f.write(cel_path + "\n")
 
+        # Time step 1
         chp_path = cel_path.replace('.CEL', '.CHP')
+        start = time.time()
         subprocess.run([
             runtime_bin,
             "--format", "xda",
             "--out-dir", UPLOAD_FOLDER,
             "--cel-files", cel_list_path
         ], check=True)
+        print(f"[DEBUG] apt-cel-convert took {time.time() - start:.2f} seconds")
+
         if not os.path.exists(chp_path):
             raise FileNotFoundError(f"CHP file not found: {chp_path}")
-        print(f"[DEBUG] apt-cel-convert completed using {cel_list_path}")
 
+        # Time step 2
         vcf_path = cel_path.replace('.CEL', '.vcf')
+        start = time.time()
         subprocess.run([
             'bcftools', '+gtc2vcf',
             '--chps', chp_path,
-            '--fasta-ref', '/tmp/reference/reference.fa',
-            '--annotation-files', '/tmp/reference/Axiom_Annotation.r1.csv',
+            '--fasta-ref', REFERENCE_FASTA,
+            '--annotation-files', ANNOTATION_CSV,
             '-o', vcf_path
         ], check=True)
+        print(f"[DEBUG] gtc2vcf took {time.time() - start:.2f} seconds")
+
         if not os.path.exists(vcf_path):
             raise FileNotFoundError(f"VCF file not found: {vcf_path}")
-        print(f"[DEBUG] Converted VCF file at {vcf_path}")
 
+        # Time step 3
         txt_path = cel_path.replace('.CEL', '.txt')
+        start = time.time()
         subprocess.run(['python3', 'vcf_to_23andme.py', vcf_path, txt_path], check=True)
+        print(f"[DEBUG] vcf_to_23andme took {time.time() - start:.2f} seconds")
+
         if not os.path.exists(txt_path):
             raise FileNotFoundError(f"TXT file not found: {txt_path}")
-        print(f"[DEBUG] Converted TXT file at {txt_path}")
 
         return send_file(txt_path, as_attachment=True)
 

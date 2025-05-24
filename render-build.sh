@@ -70,4 +70,4 @@ ls -lh /tmp/reference
 echo "[INFO] Skipping apt-cel-convert copy during build"
 
 # Set custom Gunicorn timeout for long CEL conversion jobs
-echo "web: gunicorn app:app --timeout 300 --bind 0.0.0.0:\$PORT" > Procfile
+echo "web: gunicorn app:app --timeout 300 --bind 0.0.0.0:\$PORT" > /opt/render/project/src/Procfile

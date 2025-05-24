@@ -52,14 +52,19 @@ def convert():
             subprocess.run(["chmod", "+x", runtime_bin], check=True)
             print("[DEBUG] Copied apt-cel-convert binary to /tmp/bin")
 
+        print("[DEBUG] Checking if reference.fa exists...")
         os.makedirs('/tmp/reference', exist_ok=True)
+        
         if not os.path.exists(REFERENCE_FASTA_PATH):
             print("[INFO] Downloading reference.fa...")
             urllib.request.urlretrieve(REFERENCE_URL, REFERENCE_FASTA_PATH)
+            print("[DEBUG] Finished downloading reference.fa")
 
+        print("[DEBUG] Checking if annotation CSV exists...")
         if not os.path.exists(ANNOTATION_CSV_PATH):
             print("[INFO] Downloading Axiom_Annotation.r1.csv...")
             urllib.request.urlretrieve(ANNOTATION_URL, ANNOTATION_CSV_PATH)
+            print("[DEBUG] Finished downloading Axiom_Annotation.r1.csv")
 
         cel_list_path = os.path.join(UPLOAD_FOLDER, "cel-files.txt")
         with open(cel_list_path, "w") as f:

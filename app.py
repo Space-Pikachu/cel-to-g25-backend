@@ -45,6 +45,9 @@ def convert():
         file.save(cel_path)
         print(f"[DEBUG] Saved CEL file to {cel_path}")
 
+        # ✅ Insert here
+        assert os.path.exists(cel_path) and os.path.getsize(cel_path) > 0, f"CEL file missing or empty: {cel_path}"
+
         runtime_bin = "/tmp/bin/apt-cel-convert"
         if not os.path.exists(runtime_bin):
             os.makedirs("/tmp/bin", exist_ok=True)
@@ -70,14 +73,27 @@ def convert():
         with open(cel_list_path, "w") as f:
             f.write(cel_path + "\n")
 
+        # ✅ Insert here
+        with open(cel_list_path) as f:
+            print("[DEBUG] cel-files.txt contents:")
+            print(f.read())
+
         chp_path = cel_path.replace('.CEL', '.CHP')
         start = time.time()
-        subprocess.run([
-            runtime_bin,
-            "--format", "xda",
-            "--out-dir", UPLOAD_FOLDER,
-            "--cel-files", cel_list_path
-        ], check=True)
+try:
+    result = subprocess.run([
+        runtime_bin,
+        "--format", "xda",
+        "--out-dir", UPLOAD_FOLDER,
+        "--cel-files", cel_list_path
+    ], check=True, capture_output=True, text=True)
+
+    print(f"[DEBUG] apt-cel-convert stdout:\n{result.stdout}")
+    print(f"[DEBUG] apt-cel-convert stderr:\n{result.stderr}")
+
+except subprocess.CalledProcessError as e:
+    print(f"[ERROR] apt-cel-convert failed:\nSTDOUT:\n{e.stdout}\nSTDERR:\n{e.stderr}")
+    return jsonify({'error': 'CEL to CHP conversion failed', 'stderr': e.stderr}), 500
         print(f"[DEBUG] apt-cel-convert took {time.time() - start:.2f} seconds")
 
         if not os.path.exists(chp_path):

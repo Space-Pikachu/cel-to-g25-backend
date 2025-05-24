@@ -81,8 +81,8 @@ def convert():
         subprocess.run([
             'bcftools', '+gtc2vcf',
             '--chps', chp_path,
-            '--fasta-ref', REFERENCE_FASTA,
-            '--annotation-files', ANNOTATION_CSV,
+            '--fasta-ref', '/tmp/reference/reference.fa',
+            '--annotation-files', '/tmp/reference/Axiom_Annotation.r1.csv',
             '-o', vcf_path
         ], check=True)
         if not os.path.exists(vcf_path):
